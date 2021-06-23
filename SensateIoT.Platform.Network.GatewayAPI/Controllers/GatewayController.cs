@@ -104,7 +104,7 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Controllers
 			await this.m_blobService.StoreAsync(blob, mstream.ToArray()).ConfigureAwait(false);
 			await this.m_blobs.CreateAsync(blob).ConfigureAwait(false);
 
-			var resp = new Response<GatewayResponse> {Data = {Message = "Blob created!", Queued = 1}};
+			var resp = new Response<GatewayResponse> { Data = { Message = "Blob created!", Queued = 1 } };
 
 			return this.Accepted(resp);
 		}

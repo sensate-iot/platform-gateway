@@ -35,7 +35,7 @@ namespace SensateIoT.Platform.Network.DataAccess.Repositories
 			builder.WithParameter("sensorid", blob.SensorID, NpgsqlDbType.Varchar);
 			builder.WithParameter("filename", blob.FileName, NpgsqlDbType.Text);
 			builder.WithParameter("path", blob.Path, NpgsqlDbType.Text);
-			builder.WithParameter("storage", (int) blob.StorageType, NpgsqlDbType.Integer);
+			builder.WithParameter("storage", (int)blob.StorageType, NpgsqlDbType.Integer);
 			builder.WithParameter("filesize", blob.FileSize, NpgsqlDbType.Integer);
 			await using var reader = await builder.ExecuteAsync(ct).ConfigureAwait(false);
 
@@ -48,7 +48,7 @@ namespace SensateIoT.Platform.Network.DataAccess.Repositories
 				SensorID = reader.GetString(1),
 				FileName = reader.GetString(2),
 				Path = reader.GetString(3),
-				StorageType = (StorageType) reader.GetInt32(4),
+				StorageType = (StorageType)reader.GetInt32(4),
 				Timestamp = reader.GetDateTime(5),
 				FileSize = reader.GetInt32(6)
 			};

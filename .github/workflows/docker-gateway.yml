@@ -17,7 +17,7 @@ env:
   BASE_PATH: SensateIoT.Platform.Network.GatewayAPI
 
 jobs:
-  push-networkapi:
+  push-gatewayapi:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,7 +32,7 @@ jobs:
 
       - name: Get assembly version
         run: |
-          PROJ=$BASE_PATH/SensateIoT.Platform.Network.API.csproj
+          PROJ=$BASE_PATH/SensateIoT.Platform.Network.GatewayAPI.csproj
           VERSION=$(pwsh -command "Tools/Deployment/Get-AssemblyVersion.ps1 $PROJ")
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
