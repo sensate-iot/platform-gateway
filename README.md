@@ -1,15 +1,12 @@
-# Sensate IoT - Network
+# Sensate IoT - Gateway API
 
 ![header1] ![header2] ![header3]
 
 This is the core network solution for the Sensate IoT data platform. This
 solution contains all network infrastructure services:
 
-- Gateway + configuration API
-- Trigger service
-- Storage service
-- Live data service
-- Database definition
+- Gateway API
+- Authorization service
 
 ## Gateway
 
@@ -21,9 +18,6 @@ authorization of messages is done by the router.
 
 This solution contains serveral services that add value to a message or measurement:
 
-- automation via the trigger service;
-- persistance via the storage service;
-- real-time updates via the live data service.
 
 [header1]: https://github.com/sensate-iot/platform-network/workflows/Docker/badge.svg "Docker Build"
 [header2]: https://github.com/sensate-iot/platform-network/workflows/Format%20check/badge.svg ".NET format"
