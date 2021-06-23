@@ -26,10 +26,7 @@ namespace SensateIoT.Platform.Network.DataAccess.Repositories
 		private readonly IAuthorizationDbContext m_ctx;
 
 		private const string NetworkApi_GetApiKeyByKey = "networkapi_selectapikeybykey";
-		private const string NetworkApi_DeleteSensorKey = "networkapi_deletesensorkey";
-		private const string NetworkApi_UpdateApiKey = "networkapi_updateapikey";
 		private const string NetworkApi_IncrementRequestCount = "networkapi_incrementrequestcount";
-		private const string NetworkApi_CreateSensorKey = "networkapi_createsensorkey";
 
 		public ApiKeyRepository(IAuthorizationDbContext ctx)
 		{
@@ -65,96 +62,6 @@ namespace SensateIoT.Platform.Network.DataAccess.Repositories
 				Revoked = reader.GetBoolean(1),
 				Type = (ApiKeyType)reader.GetInt32(2),
 				ReadOnly = reader.GetBoolean(3)
-			};
-
-			return apikey;
-		}
-
-		public async Task DeleteAsync(string key, CancellationToken ct = default)
-		{
-			await using var cmd = this.m_ctx.Connection.CreateCommand();
-			if(cmd.Connection.State != ConnectionState.Open) {
-				await cmd.Connection.OpenAsync(ct).ConfigureAwait(false);
-			}
-
-			cmd.CommandType = CommandType.StoredProcedure;
-			cmd.CommandText = NetworkApi_DeleteSensorKey;
-
-			var param = new NpgsqlParameter("key", NpgsqlDbType.Text) { Value = key };
-			cmd.Parameters.Add(param);
-
-			await using var reader = await cmd.ExecuteReaderAsync(ct).ConfigureAwait(false);
-		}
-
-		public async Task<ApiKey> CreateSensorKeyAsync(Sensor sensor, CancellationToken ct = default)
-		{
-			ApiKey apikey;
-
-			await using var cmd = this.m_ctx.Connection.CreateCommand();
-			if(cmd.Connection.State != ConnectionState.Open) {
-				await cmd.Connection.OpenAsync(ct).ConfigureAwait(false);
-			}
-
-			cmd.CommandType = CommandType.StoredProcedure;
-			cmd.CommandText = NetworkApi_CreateSensorKey;
-
-			var key = new NpgsqlParameter("key", NpgsqlDbType.Text) { Value = sensor.Secret };
-			var uid = new NpgsqlParameter("userid", NpgsqlDbType.Text) { Value = sensor.Owner };
-
-			cmd.Parameters.Add(key);
-			cmd.Parameters.Add(uid);
-
-			await using var reader = await cmd.ExecuteReaderAsync(ct).ConfigureAwait(false);
-
-			if(!reader.HasRows) {
-				return null;
-			}
-
-			await reader.ReadAsync(ct).ConfigureAwait(false);
-
-			apikey = new ApiKey {
-				UserId = reader.GetGuid(1),
-				Key = reader.GetString(2),
-				Revoked = reader.GetBoolean(3),
-				Type = (ApiKeyType)reader.GetInt32(4),
-				ReadOnly = reader.GetBoolean(5)
-			};
-
-			return apikey;
-		}
-
-		public async Task<ApiKey> UpdateAsync(string old, string @new, CancellationToken ct = default)
-		{
-			ApiKey apikey;
-
-			await using var cmd = this.m_ctx.Connection.CreateCommand();
-			if(cmd.Connection.State != ConnectionState.Open) {
-				await cmd.Connection.OpenAsync(ct).ConfigureAwait(false);
-			}
-
-			cmd.CommandType = CommandType.StoredProcedure;
-			cmd.CommandText = NetworkApi_UpdateApiKey;
-
-			var oldArgument = new NpgsqlParameter("old", NpgsqlDbType.Text) { Value = old };
-			var newArgument = new NpgsqlParameter("new", NpgsqlDbType.Text) { Value = @new };
-
-			cmd.Parameters.Add(oldArgument);
-			cmd.Parameters.Add(newArgument);
-
-			await using var reader = await cmd.ExecuteReaderAsync(ct).ConfigureAwait(false);
-
-			if(!reader.HasRows) {
-				return null;
-			}
-
-			await reader.ReadAsync(ct).ConfigureAwait(false);
-
-			apikey = new ApiKey {
-				UserId = reader.GetGuid(1),
-				Key = reader.GetString(2),
-				Revoked = reader.GetBoolean(3),
-				Type = (ApiKeyType)reader.GetInt32(4),
-				ReadOnly = reader.GetBoolean(5)
 			};
 
 			return apikey;

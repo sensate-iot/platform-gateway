@@ -25,8 +25,6 @@ namespace SensateIoT.Platform.Network.DataAccess.Repositories
 	public class AccountRepository : IAccountRepository
 	{
 		private const string NetworkApi_GetAccountByID = "networkapi_selectuserbyid";
-		private const string NetworkApi_GetAccountByEmail = "networkapi_selectuserbyemail";
-		private const string NetworkApi_GetAccountsByID = "networkapi_selectusersbyid";
 
 		private readonly IAuthorizationDbContext m_authorization;
 
@@ -49,10 +47,10 @@ namespace SensateIoT.Platform.Network.DataAccess.Repositories
 			cmd.Parameters.Add(param);
 
 			await using var reader = await cmd.ExecuteReaderAsync(ct).ConfigureAwait(false);
-			return await this.GetAccountAsync(reader, ct).ConfigureAwait(false);
+			return await GetAccountAsync(reader, ct).ConfigureAwait(false);
 		}
 
-		public async Task<User> GetAccountAsync(DbDataReader reader, CancellationToken ct = default)
+		private static async Task<User> GetAccountAsync(DbDataReader reader, CancellationToken ct = default)
 		{
 			User user;
 
@@ -79,79 +77,6 @@ namespace SensateIoT.Platform.Network.DataAccess.Repositories
 
 			return user;
 
-		}
-
-		public async Task<User> GetAccountByEmailAsync(string emailAddress, CancellationToken ct = default)
-		{
-			await using var cmd = this.m_authorization.Connection.CreateCommand();
-			if(cmd.Connection.State != ConnectionState.Open) {
-				await cmd.Connection.OpenAsync(ct).ConfigureAwait(false);
-			}
-
-			cmd.CommandType = CommandType.StoredProcedure;
-			cmd.CommandText = NetworkApi_GetAccountByEmail;
-
-			var email = new NpgsqlParameter("email", NpgsqlDbType.Text) { Value = emailAddress };
-			cmd.Parameters.Add(email);
-
-			await using var reader = await cmd.ExecuteReaderAsync(ct).ConfigureAwait(false);
-			return await this.GetAccountAsync(reader, ct).ConfigureAwait(false);
-		}
-
-		public async Task<IEnumerable<User>> GetAccountsAsync(IEnumerable<string> idlist, CancellationToken ct = default)
-		{
-			var users = new List<User>();
-			var uidlist = idlist.ToList();
-
-			if(!uidlist.Any()) {
-				return users;
-			}
-
-			await using var cmd = this.m_authorization.Connection.CreateCommand();
-			if(cmd.Connection.State != ConnectionState.Open) {
-				await cmd.Connection.OpenAsync(ct).ConfigureAwait(false);
-			}
-
-			cmd.CommandType = CommandType.StoredProcedure;
-			cmd.CommandText = NetworkApi_GetAccountsByID;
-
-			var idArray = string.Join(",", uidlist);
-			var param = new NpgsqlParameter("userids", NpgsqlDbType.Text) { Value = idArray };
-			cmd.Parameters.Add(param);
-
-			await using var reader = await cmd.ExecuteReaderAsync(ct).ConfigureAwait(false);
-
-			if(!reader.HasRows) {
-				return null;
-			}
-
-			User user = null;
-
-			while(await reader.ReadAsync(ct).ConfigureAwait(false)) {
-
-				var tmp = new User {
-					ID = reader.GetGuid(0),
-				};
-
-				if(user?.ID == tmp.ID) {
-					user.UserRoles.Add(reader.GetString(7));
-					continue;
-				}
-
-				tmp.FirstName = reader.SafeGetString(1);
-				tmp.LastName = reader.SafeGetString(2);
-				tmp.Email = reader.GetString(3);
-				tmp.RegisteredAt = reader.GetDateTime(4);
-				tmp.PhoneNumber = reader.SafeGetString(5);
-				tmp.BillingLockout = reader.GetBoolean(6);
-				tmp.UserRoles = new List<string> { reader.GetString(7) };
-
-				user = tmp;
-				users.Add(tmp);
-			}
-
-
-			return users;
 		}
 	}
 }

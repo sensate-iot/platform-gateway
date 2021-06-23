@@ -17,7 +17,6 @@ namespace SensateIoT.Platform.Network.DataAccess.Abstract
 {
 	public interface IControlMessageRepository
 	{
-		Task CreateAsync(ControlMessage obj, CancellationToken ct = default);
 		Task DeleteBySensorAsync(ObjectId sensor, CancellationToken ct = default);
 		Task DeleteBySensorIds(IEnumerable<ObjectId> sensorIds, CancellationToken ct = default);
 	}

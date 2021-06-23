@@ -35,12 +35,10 @@ namespace SensateIoT.Platform.Network.Data.Converters
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
 		{
 			decimal v = (decimal)value;
-			string raw;
 
 			if(v == Decimal.MinValue || value == null) {
 				writer.WriteValue(String.Empty);
 			} else {
-				raw = v.ToString(CultureInfo.InvariantCulture);
 				writer.WriteValue(value);
 			}
 		}
