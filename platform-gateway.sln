@@ -23,15 +23,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensateIoT.Platform.Network
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensateIoT.Platform.Network.Common", "SensateIoT.Platform.Network.Common\SensateIoT.Platform.Network.Common.csproj", "{C6DF3F42-4160-49AD-B095-633573B3A655}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensateIoT.Platform.Network.Tests", "SensateIoT.Platform.Network.Tests\SensateIoT.Platform.Network.Tests.csproj", "{759F0161-8102-442B-9535-4620E2B75415}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SensateIoT.Platform.Network.GatewayAPI", "SensateIoT.Platform.Network.GatewayAPI\SensateIoT.Platform.Network.GatewayAPI.csproj", "{77B8B1C7-4C1B-44EC-BB89-2793BA33D48A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pipelines", "Pipelines", "{0CD2E884-3DA9-485F-A729-93AC8627306F}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\docker-gateway.yml = .github\workflows\docker-gateway.yml
 		.github\workflows\dotnet-format.yml = .github\workflows\dotnet-format.yml
-		.github\workflows\unittest-network.yml = .github\workflows\unittest-network.yml
 	EndProjectSection
 EndProject
 Global
@@ -52,10 +49,6 @@ Global
 		{C6DF3F42-4160-49AD-B095-633573B3A655}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6DF3F42-4160-49AD-B095-633573B3A655}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6DF3F42-4160-49AD-B095-633573B3A655}.Release|Any CPU.Build.0 = Release|Any CPU
-		{759F0161-8102-442B-9535-4620E2B75415}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{759F0161-8102-442B-9535-4620E2B75415}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{759F0161-8102-442B-9535-4620E2B75415}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{759F0161-8102-442B-9535-4620E2B75415}.Release|Any CPU.Build.0 = Release|Any CPU
 		{77B8B1C7-4C1B-44EC-BB89-2793BA33D48A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{77B8B1C7-4C1B-44EC-BB89-2793BA33D48A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77B8B1C7-4C1B-44EC-BB89-2793BA33D48A}.Release|Any CPU.ActiveCfg = Release|Any CPU
