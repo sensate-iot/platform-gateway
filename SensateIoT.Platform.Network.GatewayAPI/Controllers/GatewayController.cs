@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging;
 
 using MongoDB.Bson;
 using Newtonsoft.Json;
+
 using SensateIoT.Platform.Network.Common.Adapters.Abstract;
 using SensateIoT.Platform.Network.Common.Converters;
 using SensateIoT.Platform.Network.Common.Services.Processing;

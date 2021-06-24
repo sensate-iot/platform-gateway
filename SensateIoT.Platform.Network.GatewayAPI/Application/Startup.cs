@@ -13,7 +13,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Microsoft.OpenApi.Models;
+
 using SensateIoT.Platform.Network.Common.Adapters;
 using SensateIoT.Platform.Network.Common.Adapters.Abstract;
 using SensateIoT.Platform.Network.Common.Init;
@@ -28,6 +30,7 @@ using SensateIoT.Platform.Network.GatewayAPI.Config;
 using SensateIoT.Platform.Network.GatewayAPI.Extensions;
 using SensateIoT.Platform.Network.GatewayAPI.Middleware;
 using SensateIoT.Platform.Network.GatewayAPI.Services;
+
 using IAuthorizationService = SensateIoT.Platform.Network.Common.Services.Processing.IAuthorizationService;
 
 namespace SensateIoT.Platform.Network.GatewayAPI.Application
