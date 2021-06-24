@@ -29,8 +29,8 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Middleware
 			this._next = next;
 			this.m_logger = logger;
 
-			this.m_requestCounter = Metrics.CreateCounter("networkapi_requests_total", "Total number of network API requests.");
-			this.m_requestExceptions = Metrics.CreateCounter("networkapi_request_exceptions_total", "Total number of network API exceptions");
+			this.m_requestCounter = Metrics.CreateCounter("gatewayapi_requests_total", "Total number of network API requests.");
+			this.m_requestExceptions = Metrics.CreateCounter("gatewayapi_request_exceptions_total", "Total number of network API exceptions");
 
 			this.m_settings = new JsonSerializerSettings {
 				ContractResolver = new DefaultContractResolver {
