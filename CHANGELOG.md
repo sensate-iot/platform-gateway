@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 24-06-2021
 ### Added
-- Imported platform-network
+- Imported from platform-network
 
 ### Updated
 - Gateway controller
