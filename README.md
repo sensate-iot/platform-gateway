@@ -14,11 +14,6 @@ The gateway is the entry point to the platform. All other ingress services forwa
 data to this gateway internally. The gateway performs message authentication. The
 authorization of messages is done by the router.
 
-## Services
-
-This solution contains serveral services that add value to a message or measurement:
-
-
 [header1]: https://github.com/sensate-iot/platform-network/workflows/Docker/badge.svg "Docker Build"
 [header2]: https://github.com/sensate-iot/platform-network/workflows/Format%20check/badge.svg ".NET format"
-[header3]: https://img.shields.io/badge/version-v1.6.4-informational "Sensate IoT version"
+[header3]: https://img.shields.io/badge/version-v1.0.0-informational "Sensate IoT version"
