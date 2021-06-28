@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -65,7 +66,6 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Application
 			services.AddScoped<IAccountRepository, AccountRepository>();
 			services.AddScoped<IApiKeyRepository, ApiKeyRepository>();
 			services.AddScoped<IBlobRepository, BlobRepository>();
-			services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 
 			services.AddSingleton<IBlobService, FilesystemBlobService>();
 			services.AddSingleton<IRouterClient, RouterClient>();
