@@ -80,7 +80,7 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Application
 
 			services.AddSwaggerGen(c => {
 				c.SwaggerDoc("v1", new OpenApiInfo {
-					Title = "Sensate IoT Network API - Version 1",
+					Title = "Sensate IoT Gateway API - Version 1",
 					Version = "v1"
 				});
 
