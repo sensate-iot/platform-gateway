@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.1] - 28-06-2021
 ### Updated
+- Swagger documentation
+- Project dependency's
+
+## [1.0.1] - 28-06-2021
+### Updated
 - Logging policy
 - Request logging middleware
 
