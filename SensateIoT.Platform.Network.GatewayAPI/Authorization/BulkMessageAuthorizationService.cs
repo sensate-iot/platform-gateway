@@ -139,7 +139,7 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Authorization
 					Longitude = decimal.ToDouble(value.Longitude),
 					Timestamp = Timestamp.FromDateTime(value.Timestamp),
 					Data = value.Data,
-					Encoding = (int) value.Encoding
+					Encoding = (int)value.Encoding
 				};
 
 				data.Add(m);

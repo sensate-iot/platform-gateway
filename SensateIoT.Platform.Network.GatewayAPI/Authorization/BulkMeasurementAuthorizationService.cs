@@ -26,7 +26,7 @@ using Measurement = SensateIoT.Platform.Network.Contracts.DTO.Measurement;
 
 namespace SensateIoT.Platform.Network.GatewayAPI.Authorization
 {
-	public class BulkMeasurementAuthorizationService : AbstractAuthorizationHandler<JsonGatewayRequest<MeasurementPart>>, IBulkMeasurementAuthorizationService 
+	public class BulkMeasurementAuthorizationService : AbstractAuthorizationHandler<JsonGatewayRequest<MeasurementPart>>, IBulkMeasurementAuthorizationService
 	{
 		private readonly IHashAlgorithm m_algo;
 		private readonly IRouterClient m_router;

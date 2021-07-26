@@ -41,9 +41,9 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Services
 		{
 			try {
 				await Task.WhenAll(this.m_measurements.ProcessAsync(),
-				                   this.m_bulkMessages.ProcessAsync(),
-				                   this.m_bulkMeasurements.ProcessAsync(),
-				                   this.m_messages.ProcessAsync())
+								   this.m_bulkMessages.ProcessAsync(),
+								   this.m_bulkMeasurements.ProcessAsync(),
+								   this.m_messages.ProcessAsync())
 					.ConfigureAwait(false);
 			} catch(RpcException ex) {
 				this.m_logger.LogError(ex, "Unable to route messages");
