@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Http;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+
 using SensateIoT.Platform.Network.GatewayAPI.DTO;
 
 namespace SensateIoT.Platform.Network.GatewayAPI.Middleware
@@ -23,7 +26,7 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Middleware
 			};
 		}
 
-		public async Task RespondErrorAsync(HttpContext ctx, string err, int http)
+		private async Task RespondErrorAsync(HttpContext ctx, string err, int http)
 		{
 			var response = new Response<string>();
 

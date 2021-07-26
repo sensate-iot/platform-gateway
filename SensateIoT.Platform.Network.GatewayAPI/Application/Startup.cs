@@ -7,14 +7,14 @@
 
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
 using Microsoft.OpenApi.Models;
 
 using SensateIoT.Platform.Network.Common.Adapters;
@@ -58,6 +58,11 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Application
 			services.AddNetworkingContext();
 			services.AddCors();
 
+			services.Configure<ApiBehaviorOptions>(o => {
+				o.SuppressModelStateInvalidFilter = true;
+				o.SuppressMapClientErrors = true;
+			});
+
 			services.Configure<RouterConfig>(this.m_configuration.GetSection("Router"));
 			services.Configure<BlobOptions>(this.m_configuration.GetSection("Storage"));
 			services.Configure<MetricsOptions>(this.m_configuration.GetSection("HttpServer:Metrics"));
@@ -69,6 +74,9 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Application
 
 			services.AddSingleton<IBlobService, FilesystemBlobService>();
 			services.AddSingleton<IRouterClient, RouterClient>();
+
+			services.AddSingleton<IBulkMeasurementAuthorizationService, BulkMeasurementAuthorizationService>();
+			services.AddSingleton<IBulkMessageAuthorizationService, BulkMessageAuthorizationService>();
 			services.AddSingleton<IAuthorizationService, AuthorizationService>();
 			services.AddSingleton<IMeasurementAuthorizationService, MeasurementAuthorizationService>();
 			services.AddSingleton<IMessageAuthorizationService, MessageAuthorizationService>();
@@ -82,6 +90,11 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Application
 				c.SwaggerDoc("v1", new OpenApiInfo {
 					Title = "Sensate IoT Gateway API - Version 1",
 					Version = "v1"
+				});
+
+				c.SwaggerDoc("v2", new OpenApiInfo {
+					Title = "Sensate IoT Gateway API - Version 2",
+					Version = "v2"
 				});
 
 				c.SchemaFilter<ObjectIdSchemaFilter>();
@@ -115,6 +128,15 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Application
 
 			services.AddReverseProxy(proxyLevel);
 			services.AddRouting();
+			services.AddApiVersioning(o => {
+				o.ReportApiVersions = true;
+				o.AssumeDefaultVersionWhenUnspecified = true;
+				o.DefaultApiVersion = new ApiVersion(1, 0);
+			});
+			services.AddVersionedApiExplorer(options => {
+				options.GroupNameFormat = "'v'V";
+				options.SubstituteApiVersionInUrl = true;
+			});
 			services.AddControllers().AddNewtonsoftJson();
 		}
 
@@ -143,6 +165,7 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Application
 
 			app.UseSwaggerUI(c => {
 				c.SwaggerEndpoint("/gateway/swagger/v1/swagger.json", "Sensate IoT Gateway API v1");
+				c.SwaggerEndpoint("/gateway/swagger/v2/swagger.json", "Sensate IoT Gateway API v2");
 				c.RoutePrefix = "gateway/swagger";
 			});
 
