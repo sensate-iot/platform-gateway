@@ -35,11 +35,15 @@ using Message = SensateIoT.Platform.Network.GatewayAPI.DTO.Message;
 namespace SensateIoT.Platform.Network.GatewayAPI.Controllers
 {
 	[Produces("application/json")]
-	[Route("gateway/v1")]
+	[Route("gateway/v{version:apiVersion}")]
+	[ApiVersion("2"), ApiVersion("1")]
+	[ApiController]
 	public class GatewayController : AbstractApiController
 	{
 		private readonly IMeasurementAuthorizationService m_measurementAuthorizationService;
 		private readonly IMessageAuthorizationService m_messageAuthorizationService;
+		private readonly IBulkMessageAuthorizationService m_bulkMessageAuthorizationService;
+		private readonly IBulkMeasurementAuthorizationService m_bulkMeasurementAuthorizationService;
 		private readonly IBlobRepository m_blobs;
 		private readonly IBlobService m_blobService;
 		private readonly IRouterClient m_client;
@@ -48,6 +52,8 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Controllers
 
 		public GatewayController(IMeasurementAuthorizationService measurementAuth,
 								 IMessageAuthorizationService messageAuth,
+								 IBulkMessageAuthorizationService bulkMessageAuth,
+								 IBulkMeasurementAuthorizationService bulkMeasurementAuth,
 								 IHttpContextAccessor ctx,
 								 ISensorRepository sensors,
 								 IApiKeyRepository keys,
@@ -59,6 +65,8 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Controllers
 		{
 			this.m_measurementAuthorizationService = measurementAuth;
 			this.m_messageAuthorizationService = messageAuth;
+			this.m_bulkMessageAuthorizationService = bulkMessageAuth;
+			this.m_bulkMeasurementAuthorizationService = bulkMeasurementAuth;
 			this.m_blobService = blobService;
 			this.m_blobs = blobs;
 			this.m_client = client;
@@ -66,6 +74,7 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Controllers
 			this.m_auth = auth;
 		}
 
+		[MapToApiVersion("1")]
 		[HttpPost("blobs")]
 		[ReadWriteApiKey, ValidateModel]
 		[ProducesResponseType(typeof(Response<object>), StatusCodes.Status422UnprocessableEntity)]
@@ -110,6 +119,33 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Controllers
 			return this.Accepted(resp);
 		}
 
+		[MapToApiVersion("2")]
+		[HttpPost("messages")]
+		[ReadWriteApiKey, ValidateModel]
+		[ProducesResponseType(typeof(Response<object>), StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(typeof(Response<object>), StatusCodes.Status403Forbidden)]
+		[ProducesResponseType(typeof(Response<GatewayResponse>), StatusCodes.Status202Accepted)]
+		public async Task<IActionResult> EnqueueBulkMessagesAsync([FromBody] GenericGatewayRequest<MessagePart> messages)
+		{
+			await Task.CompletedTask;
+			var response = new Response<GatewayResponse>();
+
+			var raw = await this.PeekRequestBodyAsString().ConfigureAwait(false);
+			this.m_bulkMessageAuthorizationService.AddMessage(new JsonGatewayRequest<MessagePart> {
+				RequestData = messages,
+				Json = raw
+			});
+
+			response.Data = new GatewayResponse {
+				Message = "Messages received and queued.",
+				Queued = messages.Values.Count()
+			};
+
+			return this.Accepted(response);
+		}
+
+		[MapToApiVersion("1")]
 		[HttpPost("messages")]
 		[ReadWriteApiKey, ValidateModel]
 		[ProducesResponseType(typeof(Response<object>), StatusCodes.Status401Unauthorized)]
@@ -131,8 +167,34 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Controllers
 			return this.Accepted(response);
 		}
 
+		[MapToApiVersion("2")]
 		[HttpPost("measurements")]
 		[ReadWriteApiKey, ValidateModel]
+		[ProducesResponseType(typeof(Response<object>), StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(typeof(Response<object>), StatusCodes.Status403Forbidden)]
+		[ProducesResponseType(typeof(Response<GatewayResponse>), StatusCodes.Status202Accepted)]
+		public async Task<IActionResult> EnqueueBulkMeasurements([FromBody] GenericGatewayRequest<MeasurementPart> measurements)
+		{
+			var response = new Response<GatewayResponse>();
+
+			var raw = await this.PeekRequestBodyAsString().ConfigureAwait(false);
+			this.m_bulkMeasurementAuthorizationService.AddMessage(new JsonGatewayRequest<MeasurementPart> {
+				RequestData = measurements,
+				Json = raw
+			});
+
+			response.Data = new GatewayResponse {
+				Message = "Measurements received and queued.",
+				Queued = measurements.Values.Count()
+			};
+
+			return this.Accepted(response);
+		}
+
+		[HttpPost("measurements")]
+		[ReadWriteApiKey, ValidateModel]
+		[MapToApiVersion("1")]
 		[ProducesResponseType(typeof(Response<object>), StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(typeof(Response<object>), StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(typeof(Response<object>), StatusCodes.Status403Forbidden)]
@@ -152,6 +214,7 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Controllers
 			return this.Accepted(response);
 		}
 
+		[MapToApiVersion("1")]
 		[HttpPost("actuators")]
 		[ReadWriteApiKey, ValidateModel]
 		[ProducesResponseType(typeof(Response<object>), StatusCodes.Status401Unauthorized)]

@@ -1,5 +1,5 @@
 ﻿/*
- * Measurement authorization handler.
+ * Message authorization handler.
  *
  * @author Michel Megens
  * @email  michel@michelmegens.net
@@ -24,14 +24,14 @@ using SensateIoT.Platform.Network.GatewayAPI.DTO;
 
 namespace SensateIoT.Platform.Network.GatewayAPI.Authorization
 {
-	public class MessageAuthorizationService : AbstractAuthorizationHandler<JsonMessage>, IMessageAuthorizationService
+	public class BulkMessageAuthorizationService : AbstractAuthorizationHandler<JsonGatewayRequest<MessagePart>>, IBulkMessageAuthorizationService
 	{
 		private readonly IHashAlgorithm m_algo;
 		private readonly IRouterClient m_router;
-		private readonly ILogger<MessageAuthorizationService> m_logger;
+		private readonly ILogger<BulkMessageAuthorizationService> m_logger;
 		private readonly IServiceProvider m_provider;
 
-		public MessageAuthorizationService(IServiceProvider provider, IHashAlgorithm algo, IRouterClient client, ILogger<MessageAuthorizationService> logger)
+		public BulkMessageAuthorizationService(IServiceProvider provider, IHashAlgorithm algo, IRouterClient client, ILogger<BulkMessageAuthorizationService> logger)
 		{
 			this.m_logger = logger;
 			this.m_algo = algo;
@@ -41,12 +41,12 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Authorization
 
 		public override async Task<int> ProcessAsync()
 		{
-			List<JsonMessage> messages;
+			List<JsonGatewayRequest<MessagePart>> messages;
 
 			this.m_lock.Lock();
 
 			try {
-				var newList = new List<JsonMessage>();
+				var newList = new List<JsonGatewayRequest<MessagePart>>();
 				messages = this.m_messages;
 				this.m_messages = newList;
 			} finally {
@@ -57,8 +57,13 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Authorization
 				return 0;
 			}
 
-			messages = messages.OrderBy(m => m.Item1.SensorId).ToList();
-			var data = await this.BuildMeasurementList(messages).ConfigureAwait(false);
+			messages = messages.OrderBy(m => m.RequestData.SensorId).ToList();
+			return await this.WriteToRouterAsync(messages).ConfigureAwait(false);
+		}
+
+		private async Task<int> WriteToRouterAsync(IEnumerable<JsonGatewayRequest<MessagePart>> measurements)
+		{
+			var data = await this.BuildMessageList(measurements).ConfigureAwait(false);
 			var remaining = data.Count;
 			var index = 0;
 			var tasks = new List<Task>();
@@ -94,7 +99,7 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Authorization
 										 data.Messages.Count, result.Count, new Guid(result.ResponseID.Span));
 		}
 
-		private async Task<IList<TextMessage>> BuildMeasurementList(IEnumerable<JsonMessage> messages)
+		private async Task<IList<TextMessage>> BuildMessageList(IEnumerable<JsonGatewayRequest<MessagePart>> messages)
 		{
 			Sensor sensor = null;
 			var data = new List<TextMessage>();
@@ -104,28 +109,15 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Authorization
 
 			foreach(var message in messages) {
 				try {
-					if(sensor == null || sensor.InternalId != message.Item1.SensorId) {
-						sensor = await repo.GetAsync(message.Item1.SensorId).ConfigureAwait(false);
+					if(sensor == null || sensor.InternalId != message.RequestData.SensorId) {
+						sensor = await repo.GetAsync(message.RequestData.SensorId).ConfigureAwait(false);
 					}
 
 					if(sensor == null || !this.AuthorizeMessage(message, sensor)) {
 						continue;
 					}
 
-					if(message.Item1.Timestamp == DateTime.MinValue) {
-						message.Item1.Timestamp = DateTime.UtcNow;
-					}
-
-					var m = new TextMessage {
-						SensorID = sensor.InternalId.ToString(),
-						Latitude = decimal.ToDouble(message.Item1.Latitude),
-						Longitude = decimal.ToDouble(message.Item1.Longitude),
-						Timestamp = Timestamp.FromDateTime(message.Item1.Timestamp),
-						Data = message.Item1.Data,
-						Encoding = (int)message.Item1.Encoding
-					};
-
-					data.Add(m);
+					ConvertToContractMessage(message, sensor, data);
 				} catch(Exception ex) {
 					this.m_logger.LogInformation(ex, "Unable to process message: {message}", ex.InnerException?.Message);
 				}
@@ -134,15 +126,35 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Authorization
 			return data;
 		}
 
-		protected override bool AuthorizeMessage(JsonMessage message, Sensor sensor)
+		private static void ConvertToContractMessage(JsonGatewayRequest<MessagePart> message, Sensor sensor, ICollection<TextMessage> data)
+		{
+			foreach(var value in message.RequestData.Values) {
+				if(value.Timestamp == DateTime.MinValue) {
+					value.Timestamp = DateTime.UtcNow;
+				}
+
+				var m = new TextMessage {
+					SensorID = sensor.InternalId.ToString(),
+					Latitude = decimal.ToDouble(value.Latitude),
+					Longitude = decimal.ToDouble(value.Longitude),
+					Timestamp = Timestamp.FromDateTime(value.Timestamp),
+					Data = value.Data,
+					Encoding = (int) value.Encoding
+				};
+
+				data.Add(m);
+			}
+		}
+
+		protected override bool AuthorizeMessage(JsonGatewayRequest<MessagePart> message, Sensor sensor)
 		{
 			var match = this.m_algo.GetMatchRegex();
 			var search = this.m_algo.GetSearchRegex();
 
-			if(match.IsMatch(message.Item1.Secret)) {
-				var length = message.Item1.Secret.Length - SecretSubStringOffset;
-				var hash = HexToByteArray(message.Item1.Secret.Substring(SecretSubStringStart, length));
-				var json = search.Replace(message.Item2, sensor.Secret, 1);
+			if(match.IsMatch(message.RequestData.Secret)) {
+				var length = message.RequestData.Secret.Length - SecretSubStringOffset;
+				var hash = HexToByteArray(message.RequestData.Secret.Substring(SecretSubStringStart, length));
+				var json = search.Replace(message.Json, sensor.Secret, 1);
 				var binary = Encoding.ASCII.GetBytes(json);
 				var computed = this.m_algo.ComputeHash(binary);
 
@@ -150,7 +162,7 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Authorization
 					return false;
 				}
 			} else {
-				return message.Item1.Secret == sensor.Secret;
+				return message.RequestData.Secret == sensor.Secret;
 			}
 
 			return true;
