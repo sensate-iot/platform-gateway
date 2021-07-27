@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 27-07-2021
+### Added
+- Bulk measurement endpoint
+- Bulk message endpoint
+- Bulk authorization services
+
+### Updated
+- Gateway controller
+- Project dependency's
+
 ## [1.0.3] - 03-07-2021
 ### Updated
 - Project dependency's
