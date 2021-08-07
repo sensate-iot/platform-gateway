@@ -7,8 +7,9 @@
 
 using System.Threading;
 using System.Threading.Tasks;
-using SensateIoT.Platform.Network.Contracts.DTO;
-using SensateIoT.Platform.Network.Contracts.RPC;
+
+using SensateIoT.Platform.Router.Contracts.DTO;
+using SensateIoT.Platform.Router.Contracts.RPC;
 
 namespace SensateIoT.Platform.Network.GatewayAPI.Abstract
 {

@@ -10,16 +10,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Google.Protobuf.WellKnownTypes;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SensateIoT.Platform.Network.Contracts.DTO;
+
 using SensateIoT.Platform.Network.Data.Models;
 using SensateIoT.Platform.Network.DataAccess.Abstract;
 using SensateIoT.Platform.Network.GatewayAPI.Abstract;
 using SensateIoT.Platform.Network.GatewayAPI.DTO;
-using DataPoint = SensateIoT.Platform.Network.Contracts.DTO.DataPoint;
-using Measurement = SensateIoT.Platform.Network.Contracts.DTO.Measurement;
+using SensateIoT.Platform.Router.Contracts.DTO;
+using DataPoint = SensateIoT.Platform.Router.Contracts.DTO.DataPoint;
+using Measurement = SensateIoT.Platform.Router.Contracts.DTO.Measurement;
 
 namespace SensateIoT.Platform.Network.GatewayAPI.Authorization
 {

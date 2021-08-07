@@ -7,11 +7,14 @@
 
 using System.Threading;
 using System.Threading.Tasks;
+
 using Grpc.Core;
+
 using Microsoft.Extensions.Options;
-using SensateIoT.Platform.Network.Contracts.DTO;
-using SensateIoT.Platform.Network.Contracts.RPC;
-using SensateIoT.Platform.Network.Contracts.Services;
+
+using SensateIoT.Platform.Router.Contracts.DTO;
+using SensateIoT.Platform.Router.Contracts.RPC;
+using SensateIoT.Platform.Router.Contracts.Services;
 using SensateIoT.Platform.Network.GatewayAPI.Abstract;
 using SensateIoT.Platform.Network.GatewayAPI.Config;
 

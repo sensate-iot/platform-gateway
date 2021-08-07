@@ -16,11 +16,11 @@ using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using SensateIoT.Platform.Network.Contracts.DTO;
 using SensateIoT.Platform.Network.Data.Models;
 using SensateIoT.Platform.Network.DataAccess.Abstract;
 using SensateIoT.Platform.Network.GatewayAPI.Abstract;
 using SensateIoT.Platform.Network.GatewayAPI.DTO;
+using SensateIoT.Platform.Router.Contracts.DTO;
 
 namespace SensateIoT.Platform.Network.GatewayAPI.Authorization
 {

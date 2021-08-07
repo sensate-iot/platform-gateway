@@ -19,7 +19,7 @@ namespace SensateIoT.Platform.Network.Common.Converters
 {
 	public static class ControlMessageProtobufConverter
 	{
-		public static ControlMessage Convert(Contracts.DTO.ControlMessage message)
+		public static ControlMessage Convert(Router.Contracts.DTO.ControlMessage message)
 		{
 			return new ControlMessage {
 				Timestamp = message.Timestamp?.ToDateTime() ?? DateTime.UtcNow,
@@ -30,14 +30,14 @@ namespace SensateIoT.Platform.Network.Common.Converters
 			};
 		}
 
-		public static IEnumerable<ControlMessage> Convert(Contracts.DTO.ControlMessageData message)
+		public static IEnumerable<ControlMessage> Convert(Router.Contracts.DTO.ControlMessageData message)
 		{
 			return message.Messages.Select(Convert);
 		}
 
-		public static Contracts.DTO.ControlMessage Convert(ControlMessage message)
+		public static Router.Contracts.DTO.ControlMessage Convert(ControlMessage message)
 		{
-			return new Contracts.DTO.ControlMessage {
+			return new Router.Contracts.DTO.ControlMessage {
 				Data = message.Data,
 				Destination = System.Convert.ToInt32(message.Destination),
 				SensorID = message.SensorID.ToString(),

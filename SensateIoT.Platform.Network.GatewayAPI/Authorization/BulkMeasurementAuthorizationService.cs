@@ -16,13 +16,13 @@ using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using SensateIoT.Platform.Network.Contracts.DTO;
 using SensateIoT.Platform.Network.Data.Models;
 using SensateIoT.Platform.Network.DataAccess.Abstract;
 using SensateIoT.Platform.Network.GatewayAPI.Abstract;
 using SensateIoT.Platform.Network.GatewayAPI.DTO;
+using SensateIoT.Platform.Router.Contracts.DTO;
 
-using Measurement = SensateIoT.Platform.Network.Contracts.DTO.Measurement;
+using Measurement = SensateIoT.Platform.Router.Contracts.DTO.Measurement;
 
 namespace SensateIoT.Platform.Network.GatewayAPI.Authorization
 {
@@ -143,7 +143,7 @@ namespace SensateIoT.Platform.Network.GatewayAPI.Authorization
 				};
 
 				foreach(var (key, dp) in value.Data) {
-					var datapoint = new Contracts.DTO.DataPoint {
+					var datapoint = new Router.Contracts.DTO.DataPoint {
 						Key = key,
 						Accuracy = dp.Accuracy ?? 0,
 						Precision = dp.Precision ?? 0,
