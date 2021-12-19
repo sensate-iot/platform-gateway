@@ -22,7 +22,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="prometheus-net" Version="5.0.2" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="5.0.2" />
-    <PackageReference Include="SensateIoT.Platform.Router.Contracts" Version="1.4.1" />
+    <PackageReference Include="SensateIoT.Platform.Router.Contracts" Version="1.5.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.88" />
   </ItemGroup>
 
