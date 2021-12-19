@@ -11,7 +11,7 @@ using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace SensateIoT.Platform.Network.GatewayAPI.Application
+namespace SensateIoT.Platform.Network.GatewayAPI.Filters
 {
 	[UsedImplicitly]
 	public class ObjectIdSchemaFilter : ISchemaFilter
