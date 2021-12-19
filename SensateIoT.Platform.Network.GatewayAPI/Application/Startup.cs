@@ -29,6 +29,7 @@ using SensateIoT.Platform.Network.GatewayAPI.Abstract;
 using SensateIoT.Platform.Network.GatewayAPI.Authorization;
 using SensateIoT.Platform.Network.GatewayAPI.Config;
 using SensateIoT.Platform.Network.GatewayAPI.Extensions;
+using SensateIoT.Platform.Network.GatewayAPI.Filters;
 using SensateIoT.Platform.Network.GatewayAPI.Middleware;
 using SensateIoT.Platform.Network.GatewayAPI.Services;
 
