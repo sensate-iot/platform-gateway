@@ -16,4 +16,4 @@ authorization of messages is done by the router.
 
 [header1]: https://github.com/sensate-iot/platform-gateway/workflows/Docker/badge.svg "Docker Build"
 [header2]: https://github.com/sensate-iot/platform-gateway/workflows/Format%20check/badge.svg ".NET format"
-[header3]: https://img.shields.io/badge/version-v1.2.1-informational "Sensate IoT version"
+[header3]: https://img.shields.io/badge/version-v1.3.0-informational "Sensate IoT version"
